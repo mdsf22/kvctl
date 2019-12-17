@@ -2,12 +2,13 @@ package leveldb
 
 import (
 	"fmt"
-	"github.com/mdsf22/kvctl/db"
 	"github.com/magiconair/properties"
+	"github.com/mdsf22/kvctl/db"
 )
 
 const (
-	levelDbDir = "level.dir"
+	levelDbDir  = "level.dir"
+	levelDbStat = "level.stat"
 )
 
 type leveldbCreator struct {

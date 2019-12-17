@@ -7,6 +7,8 @@ import (
 	"time"
 )
 
+const float64EqualityThreshold = 1e-9
+
 //Histogram ...
 type Histogram struct {
 	count      int64
@@ -49,17 +51,14 @@ func (h *Histogram) Measure(latency time.Duration, len int64) {
 func (h *Histogram) Calc() {
 	h.elapsed = time.Now().Sub(h.startTime).Seconds()
 	h.avg = int64(h.sum / h.count)
-	if h.elapsed != 0.0 {
+
+	if math.Abs(h.elapsed) > float64EqualityThreshold {
 		h.kbs = int64(float64(h.totalBytes) / h.elapsed / 1024)
 		h.qps = int64(float64(h.count) / h.elapsed)
 	} else {
 		h.kbs = 0.0
 		h.qps = 0.0
 	}
-
-	// fmt.Println("elapsed:", h.elapsed)
-	// fmt.Println("qps:", h.qps)
-	// fmt.Println("kbs:", h.kbs)
 }
 
 //Summary ...

@@ -2,10 +2,10 @@ package leveldb
 
 import (
 	"fmt"
-	"os"
-	"sync"
 	"github.com/mdsf22/kvctl/db"
 	"github.com/mdsf22/kvctl/stat"
+	"os"
+	"sync"
 	"time"
 
 	"github.com/magiconair/properties"
@@ -232,6 +232,12 @@ func (c *LevelDb) PutN(num int) {
 	}
 	defer dbconn.Close()
 
+	stopCh := make(chan struct{})
+	if c.p.GetInt("leveldb.stat", 0) != 0 {
+		wg1.Add(1)
+		go c.stat(dbconn, &wg1, stopCh)
+	}
+
 	if c.p.GetInt("initdata", 0) == 0 {
 		numPthread := num / threadCount
 		for i := 0; i < threadCount; i++ {
@@ -250,7 +256,30 @@ func (c *LevelDb) PutN(num int) {
 	go db.Statistics(result, &wg1)
 	wg.Wait()
 	close(result)
+	close(stopCh)
 	wg1.Wait()
+}
+
+func (c *LevelDb) stat(db *leveldb.DB, wg *sync.WaitGroup, stopCh chan struct{}) {
+	defer wg.Done()
+	for {
+		time.Sleep(3 * time.Second)
+
+		select {
+		case <-stopCh:
+			return
+		default:
+			fmt.Println("===============stat=======================")
+			cachedblock, _ := db.GetProperty("leveldb.cachedblock")
+			openedtables, _ := db.GetProperty("leveldb.openedtables")
+			sstables, _ := db.GetProperty("leveldb.sstables")
+			fmt.Printf("> BlockCache=%s OpenedTables=%s sstables=%s\n",
+				cachedblock, openedtables, sstables)
+			fmt.Println("==========================================")
+		}
+
+	}
+
 }
 
 //Test ...

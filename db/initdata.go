@@ -5,7 +5,7 @@ import (
 	"crypto/rand"
 	"fmt"
 	"sync"
-	
+
 	"github.com/mdsf22/kvctl/stat"
 
 	"github.com/magiconair/properties"

@@ -8,9 +8,9 @@ import (
 	"strings"
 
 	"github.com/magiconair/properties"
-	"github.com/spf13/cobra"
 	"github.com/mdsf22/kvctl/db"
 	_ "github.com/mdsf22/kvctl/db/leveldb"
+	"github.com/spf13/cobra"
 	// _ "github.com/mdsf22/kvctl/db/rocksdb"
 	_ "github.com/mdsf22/kvctl/db/tikv"
 )
@@ -203,7 +203,7 @@ func main() {
 	rootCmd.PersistentFlags().StringVar(&dbname, "dbname", "tikv", "name of db")
 	rootCmd.PersistentFlags().IntVar(&valtype, "valType", 0, "0: repeat data, 1: random data")
 	rootCmd.PersistentFlags().IntVar(&initdata, "initData", 0, "0: do not init data, 1: init data")
-	rootCmd.PersistentFlags().StringArrayVarP(&propertyvalues, "prop", "p", nil, "Specify a property value with name=value")
-	rootCmd.PersistentFlags().StringArrayVarP(&propertyFiles, "property_file", "c", nil, "Spefify a property file")
+	rootCmd.PersistentFlags().StringArrayVarP(&propertyvalues, "prop", "p", nil, "specify a property value with name=value")
+	rootCmd.PersistentFlags().StringArrayVarP(&propertyFiles, "property_file", "c", nil, "spefify a property file")
 	rootCmd.Execute()
 }
